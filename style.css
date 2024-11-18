@@ -10,6 +10,18 @@ body{
   margin: 0px auto;
 }
 
+.boardfinish{
+  display: grid;
+  height: 500px;
+  width: 500px;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  border: 1px solid black;
+  gap: 2px;
+  padding: 2px;
+  background-color: transparent;
+}
+
 .board {
   display: grid;
   height: 500px;
@@ -31,4 +43,16 @@ body{
   border: 1px solid grey;
   background: lightyellow;
   cursor: pointer;
+}
+
+.playerInfoSession,
+.inputSession{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.playerInfoSession h2{
+  text-align: center;
 }

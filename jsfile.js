@@ -59,7 +59,6 @@ function Cell(){
 // Control the flow of the game and state of the game
 function GameController(playerOneName = "Player One", playerTwoName = "Player Two"){
     const board = Gameboard()
-
     
     const players = [
         {
@@ -91,6 +90,7 @@ function GameController(playerOneName = "Player One", playerTwoName = "Player Tw
     const checkResult = () =>{
         const boardMoves = board.getBoard();
         const marker = activePlayer.mark;
+        const boardDiv = document.querySelector('.board');
 
 
         // Checks rows
@@ -98,7 +98,10 @@ function GameController(playerOneName = "Player One", playerTwoName = "Player Tw
             if(boardMoves[i][0].getValue() === marker &&
                boardMoves[i][1].getValue() === marker &&
                boardMoves[i][2].getValue() === marker){
+                boardDiv.classList.remove("board");
+                boardDiv.classList.add("boardfinish")
                 return `${activePlayer.name} Win`
+                
                }
         }
 
@@ -107,6 +110,8 @@ function GameController(playerOneName = "Player One", playerTwoName = "Player Tw
              if(boardMoves[0][i].getValue() === marker &&
                boardMoves[1][i].getValue() === marker &&
                boardMoves[2][i].getValue() === marker){
+                boardDiv.classList.remove("board");
+                boardDiv.classList.add("boardfinish")
                 return `${activePlayer.name} Win`
                }
         }
@@ -115,15 +120,20 @@ function GameController(playerOneName = "Player One", playerTwoName = "Player Tw
          if (boardMoves[0][0].getValue() === marker &&
         boardMoves[1][1].getValue() === marker &&
         boardMoves[2][2].getValue() === marker) {
+        boardDiv.classList.remove("board");
+        boardDiv.classList.add("boardfinish")
         return `${activePlayer.name} Wins`;
         }
 
         if (boardMoves[0][2].getValue() === marker &&
             boardMoves[1][1].getValue() === marker &&
             boardMoves[2][0].getValue() === marker) {
+            boardDiv.classList.remove("board");
+            boardDiv.classList.add("boardfinish")
             return `${activePlayer.name} Wins`;
         }
 
+    
         // Return No winner yet
         return null;
 
@@ -140,11 +150,17 @@ function GameController(playerOneName = "Player One", playerTwoName = "Player Tw
         }
         // Ma
         board.markXO(row,col,getActivePlayer().mark);
-
         // Check the result
         lastResult = checkResult();
         if(lastResult){
             console.log(lastResult)
+            return;
+        }
+        
+        if(ground.flat().every(cell => cell.getValue() !== '')){
+            boardDiv.classList.remove("board");
+            board.classList.add("boardfinish")
+            lastResult = "Draw, Let's rematch"
             return;
         }else{
             switchPlayerTurn()
@@ -218,9 +234,36 @@ function ScreenController() {
 
    
     boardDiv.addEventListener("click", clickHandlerBoard);
-
-
-    updateScreen(); // Initial screen update
+    updateScreen(); 
 }
 
-ScreenController();
+function triggerFunction() {
+    let gameInstance = null;
+
+    
+    document.querySelector("#startButton").addEventListener("click",() =>{
+        let playerOneName = document.getElementById('playerOne').value
+        let playerTwoName = document.getElementById('playerTwo').value
+
+        document.querySelector(".playerOneName").textContent = `: ${playerOneName}`
+        document.querySelector(".playerTwoName").textContent = `: ${playerTwoName}`
+
+    },)
+
+
+    function startGame() {
+        restartGame(); 
+        gameInstance = ScreenController(); 
+    }
+
+    function restartGame() {
+        document.querySelector('.board').textContent = ''; // Clear the board display
+    }
+
+    // Attach a single event listener to start or restart the game
+    document.querySelector('#startButton').addEventListener("click", startGame);
+    document.querySelector('#resetButton').addEventListener("click",restartGame)
+}
+
+
+triggerFunction();

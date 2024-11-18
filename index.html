@@ -5,16 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic-Tac-Toe</title>
     <!-- Css link -->
-     <link rel="stylesheet" href="style.css">
-     <!-- Js file -->
-      <script src="jsfile.js" defer></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- Js file -->
+    <script src="jsfile.js" defer></script>
 </head>
 <body>
-    
+    <!-- Player Input Session -->
+    <div class="inputSession">
+        <label for="playerOne">Player One:</label>
+        <input type="text" id="playerOne">
+        <br>
+        <label for="playerTwo">Player Two:</label>
+        <input type="text" id="playerTwo">
+        <br>
+        <div class="buttonArea">
+            <button id="startButton">Start</button>
+            <button id="resetButton">Reset</button>
+        </div>
+    </div>
+    <!-- Game container -->
     <div class="container">
-        <h1 class="turn"></h1>
+        <h1 class="turn">Shall we start?</h1>
         <div class="board">
         </div>
     </div>
+    <!-- Player info section -->
+    <div class="playerInfoSession">
+        <div>
+            <h2>Player One<span class="playerOneName"></span></h2>
+            <h2 class="playerOneMarker">X</h2>
+        </div>
+        
+        <div>
+            <h2>Player Two<span class="playerTwoName"></span></h2>
+            <h2 class="playerTwoMarker">O</h2>  
+        </div>
+    </div>
+
 </body>
 </html>
