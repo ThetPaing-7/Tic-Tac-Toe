@@ -19,7 +19,7 @@ function Gameboard(){
     // To Mark the X or O of each player
     const markXO = (row, col, player) => {
         const cell = board[row][col];
-        if(cell.getValue() === 0){
+        if(cell.getValue() === ""){
             cell.addToken(player)
         }else{
             console.log("Cell already occupied")
@@ -39,7 +39,7 @@ function Gameboard(){
 
 // create each cell 
 function Cell(){
-    let value = 0;
+    let value = "";
 
     // Accept the player mark to change the value of the cell
     const addToken = (player) =>{
@@ -73,6 +73,7 @@ function GameController(playerOneName = "Player One", playerTwoName = "Player Tw
     ];
 
     let activePlayer = players[0];
+    let lastResult = null;
 
     const switchPlayerTurn = () =>{
         activePlayer = activePlayer === players[0] ? players[1] : players[0]
@@ -87,74 +88,72 @@ function GameController(playerOneName = "Player One", playerTwoName = "Player Tw
         console.log(`${getActivePlayer().name}'s turn.`)
     }
 
-    const checkResult = () => {
-        let boardMoves = board.getBoard;
-        let marker = activePlayer.mark;
-        const winningMoves = [
-        [
-            [marker,marker,marker],
-            [0,0,0],
-            [0,0,0]
-        ],
-        [
-            [marker,0,0],
-            [0,marker,0],
-            [0,0,marker]
-        ],
-        [
-            [0,marker,0],
-            [0,marker,0],
-            [0,marker,0]
-        ],
-        [
-            [marker,0,0],
-            [marker,0,0],
-            [marker,0,0]
-        ],
-        [
-            [0,0,marker],
-            [0,0,marker],
-            [0,0,marker]
-        ],
-        [
-            [0,0,marker],
-            [0,marker,0],
-            [marker,0,0]
-        ],
-        [
-            [0,0,0],
-            [marker,marker,marker],
-            [0,0,0]
-        ],
-         [
-            [0,0,0],
-            [0,0,0],
-            [marker,marker,marker]
-        ]
-    ]
+    const checkResult = () =>{
+        const boardMoves = board.getBoard();
+        const marker = activePlayer.mark;
 
-    // Check winning postions with board poistion
-    for(let i = 0; i < winningMoves.length; i++){
-        if(winningMoves[i] === boardMoves){
-            console.log(`Winner is ${activePlayer.name}`)
+
+        // Checks rows
+        for(let i = 0; i < 3; i++){
+            if(boardMoves[i][0].getValue() === marker &&
+               boardMoves[i][1].getValue() === marker &&
+               boardMoves[i][2].getValue() === marker){
+                return `${activePlayer.name} Win`
+               }
         }
+
+        // Checks column
+        for(let i = 0; i < 3; i++){
+             if(boardMoves[0][i].getValue() === marker &&
+               boardMoves[1][i].getValue() === marker &&
+               boardMoves[2][i].getValue() === marker){
+                return `${activePlayer.name} Win`
+               }
+        }
+
+        // Check diagonals
+         if (boardMoves[0][0].getValue() === marker &&
+        boardMoves[1][1].getValue() === marker &&
+        boardMoves[2][2].getValue() === marker) {
+        return `${activePlayer.name} Wins`;
+        }
+
+        if (boardMoves[0][2].getValue() === marker &&
+            boardMoves[1][1].getValue() === marker &&
+            boardMoves[2][0].getValue() === marker) {
+            return `${activePlayer.name} Wins`;
+        }
+
+        // Return No winner yet
+        return null;
+
     }
-}
     
 
 
     const playRound = (row,col) =>{
         // if the cell in occupied
-        checkResult();
         const ground = board.getBoard()
-        if(ground[row][col].getValue() !== 0){
+        if(ground[row][col].getValue() !== ""){
             console.log("Try another move")
             return;
         }
+        // Ma
         board.markXO(row,col,getActivePlayer().mark);
-        switchPlayerTurn()
-        printNewRound()
+
+        // Check the result
+        lastResult = checkResult();
+        if(lastResult){
+            console.log(lastResult)
+            return;
+        }else{
+            switchPlayerTurn()
+            printNewRound()
+        }
+        
     }
+
+    const getResult = () => lastResult;
 
     // Initizilze the play
     printNewRound();
@@ -163,7 +162,8 @@ function GameController(playerOneName = "Player One", playerTwoName = "Player Tw
     return {
         getBoard : board.getBoard,
         playRound,
-        getActivePlayer
+        getActivePlayer,
+        getResult
     };
 }
 
@@ -179,8 +179,16 @@ function ScreenController() {
         const board = game.getBoard();
         const activePlayer = game.getActivePlayer();
 
-        // Display the player's turn
-        playTurnHolder.textContent = `${activePlayer.name}'s turn...`;
+        
+        let result = game.getResult();
+        if(result){
+            playTurnHolder.textContent = result;
+            return;
+        }else{    
+            // Display the player's turn
+            playTurnHolder.textContent = `${activePlayer.name}'s turn...`;
+        }
+
 
         // Render the squares to create the board
         for (let row = 0; row < board.length; row++) {
@@ -196,6 +204,7 @@ function ScreenController() {
         }
     };
 
+    // Get the result 
     // Event listener for board clicks
     function clickHandlerBoard(e) {
         const selectedColumn = e.target.dataset.column;
@@ -207,7 +216,9 @@ function ScreenController() {
         updateScreen();
     }
 
+   
     boardDiv.addEventListener("click", clickHandlerBoard);
+
 
     updateScreen(); // Initial screen update
 }
