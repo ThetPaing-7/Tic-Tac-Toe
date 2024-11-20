@@ -57,213 +57,184 @@ function Cell(){
 
 
 // Control the flow of the game and state of the game
-function GameController(playerOneName = "Player One", playerTwoName = "Player Two"){
-    const board = Gameboard()
-    
+function GameController(playerOneName = "Player One", playerTwoName = "Player Two") {
+    const board = Gameboard();
     const players = [
-        {
-            name: playerOneName,
-            mark: "X"
-        },
-        {
-            name : playerTwoName,
-            mark: "O"   
-        }
+        { name: playerOneName, mark: "X" },
+        { name: playerTwoName, mark: "O" }
     ];
 
     let activePlayer = players[0];
     let lastResult = null;
+    let isGameOver = false; // Flag to track game state
 
-    const switchPlayerTurn = () =>{
-        activePlayer = activePlayer === players[0] ? players[1] : players[0]
-    }
+    const switchPlayerTurn = () => {
+        if (!isGameOver) {
+            activePlayer = activePlayer === players[0] ? players[1] : players[0];
+        }
+    };
 
-    // Get the active player
-    const getActivePlayer = () => activePlayer;
-
-    // Print the board
-    const printNewRound = () => {
-        board.printBoard();
-        console.log(`${getActivePlayer().name}'s turn.`)
-    }
-
-    const checkResult = () =>{
+    const checkResult = () => {
         const boardMoves = board.getBoard();
         const marker = activePlayer.mark;
-        const boardDiv = document.querySelector('.board');
 
+        const returnBoard = () => {
+            document.querySelector('.board').classList.add("board-finished");
+        };
 
-        // Checks rows
-        for(let i = 0; i < 3; i++){
-            if(boardMoves[i][0].getValue() === marker &&
-               boardMoves[i][1].getValue() === marker &&
-               boardMoves[i][2].getValue() === marker){
-                boardDiv.classList.remove("board");
-                boardDiv.classList.add("boardfinish")
-                return `${activePlayer.name} Win`
-                
-               }
+        // Check rows, columns, and diagonals
+        for (let i = 0; i < 3; i++) {
+            if (
+                boardMoves[i][0].getValue() === marker &&
+                boardMoves[i][1].getValue() === marker &&
+                boardMoves[i][2].getValue() === marker
+            ) {
+                returnBoard();
+                isGameOver = true; // Set game over
+                return `${activePlayer.name} Wins`;
+            }
+
+            if (
+                boardMoves[0][i].getValue() === marker &&
+                boardMoves[1][i].getValue() === marker &&
+                boardMoves[2][i].getValue() === marker
+            ) {
+                returnBoard();
+                isGameOver = true; // Set game over
+                return `${activePlayer.name} Wins`;
+            }
         }
 
-        // Checks column
-        for(let i = 0; i < 3; i++){
-             if(boardMoves[0][i].getValue() === marker &&
-               boardMoves[1][i].getValue() === marker &&
-               boardMoves[2][i].getValue() === marker){
-                boardDiv.classList.remove("board");
-                boardDiv.classList.add("boardfinish")
-                return `${activePlayer.name} Win`
-               }
-        }
-
-        // Check diagonals
-         if (boardMoves[0][0].getValue() === marker &&
-        boardMoves[1][1].getValue() === marker &&
-        boardMoves[2][2].getValue() === marker) {
-        boardDiv.classList.remove("board");
-        boardDiv.classList.add("boardfinish")
-        return `${activePlayer.name} Wins`;
-        }
-
-        if (boardMoves[0][2].getValue() === marker &&
+        if (
+            boardMoves[0][0].getValue() === marker &&
             boardMoves[1][1].getValue() === marker &&
-            boardMoves[2][0].getValue() === marker) {
-            boardDiv.classList.remove("board");
-            boardDiv.classList.add("boardfinish")
+            boardMoves[2][2].getValue() === marker
+        ) {
+            returnBoard();
+            isGameOver = true;
             return `${activePlayer.name} Wins`;
         }
 
-    
-        // Return No winner yet
-        return null;
+        if (
+            boardMoves[0][2].getValue() === marker &&
+            boardMoves[1][1].getValue() === marker &&
+            boardMoves[2][0].getValue() === marker
+        ) {
+            returnBoard();
+            isGameOver = true;
+            return `${activePlayer.name} Wins`;
+        }
 
-    }
-    
+        // Check for draw
+        if (boardMoves.flat().every(cell => cell.getValue() !== "")) {
+            isGameOver = true;
+            return "Draw, Let's rematch!";
+        }
 
+        return null; // No result yet
+    };
 
-    const playRound = (row,col) =>{
-        // if the cell in occupied
-        const ground = board.getBoard()
-        if(ground[row][col].getValue() !== ""){
-            console.log("Try another move")
+    const playRound = (row, col) => {
+        if (isGameOver) return; // Prevent moves if game is over
+
+        const ground = board.getBoard();
+        if (ground[row][col].getValue() !== "") {
+            console.log("Try another move");
             return;
         }
-        // Ma
-        board.markXO(row,col,getActivePlayer().mark);
-        // Check the result
+
+        board.markXO(row, col, getActivePlayer().mark);
         lastResult = checkResult();
-        if(lastResult){
-            console.log(lastResult)
+        if (lastResult) {
+            console.log(lastResult);
             return;
+        } else {
+            switchPlayerTurn();
         }
-        
-        if(ground.flat().every(cell => cell.getValue() !== '')){
-            boardDiv.classList.remove("board");
-            board.classList.add("boardfinish")
-            lastResult = "Draw, Let's rematch"
-            return;
-        }else{
-            switchPlayerTurn()
-            printNewRound()
-        }
-        
-    }
+    };
 
     const getResult = () => lastResult;
+    const getActivePlayer = () => activePlayer;
 
-    // Initizilze the play
-    printNewRound();
-
-
-    return {
-        getBoard : board.getBoard,
-        playRound,
-        getActivePlayer,
-        getResult
-    };
+    return { getBoard: board.getBoard, playRound, getActivePlayer, getResult };
 }
 
 function ScreenController() {
     const game = GameController();
     const playTurnHolder = document.querySelector(".turn");
-    const boardDiv = document.querySelector('.board');
+    const boardDiv = document.querySelector(".board");
 
     const updateScreen = () => {
         boardDiv.textContent = ""; // Clear the board display
 
-        // Get the board and active player
         const board = game.getBoard();
         const activePlayer = game.getActivePlayer();
+        const result = game.getResult();
 
-        
-        let result = game.getResult();
-        if(result){
-            playTurnHolder.textContent = result;
-            return;
-        }else{    
-            // Display the player's turn
-            playTurnHolder.textContent = `${activePlayer.name}'s turn...`;
+        if (result) {
+            playTurnHolder.textContent = result; // Show result
+        } else {
+            playTurnHolder.textContent = `${activePlayer.name}'s turn...`; // Show active player's turn
         }
 
-
-        // Render the squares to create the board
+        // Render board cells
         for (let row = 0; row < board.length; row++) {
             for (let col = 0; col < board[row].length; col++) {
                 const cellButton = document.createElement("button");
                 cellButton.classList.add("cell");
                 cellButton.dataset.row = row;
                 cellButton.dataset.column = col;
-                cellButton.textContent = board[row][col].getValue(); // Display the cell value
+
+                const cellValue = board[row][col].getValue();
+                cellButton.textContent = cellValue;
+
+                if (cellValue === "X") {
+                    cellButton.classList.add("cell-x");
+                } else if (cellValue === "O") {
+                    cellButton.classList.add("cell-o");
+                }
 
                 boardDiv.appendChild(cellButton);
             }
         }
     };
 
-    // Get the result 
-    // Event listener for board clicks
-    function clickHandlerBoard(e) {
-        const selectedColumn = e.target.dataset.column;
-        const selectedRow = e.target.dataset.row;
+    boardDiv.addEventListener("click", (e) => {
+        const row = e.target.dataset.row;
+        const col = e.target.dataset.column;
 
-        if (selectedColumn === undefined || selectedRow === undefined) return; // Ensure a valid click
+        if (row !== undefined && col !== undefined) {
+            game.playRound(parseInt(row), parseInt(col));
+            updateScreen();
+        }
+    });
 
-        game.playRound(parseInt(selectedRow), parseInt(selectedColumn));
-        updateScreen();
-    }
-
-   
-    boardDiv.addEventListener("click", clickHandlerBoard);
-    updateScreen(); 
+    updateScreen();
 }
+
 
 function triggerFunction() {
     let gameInstance = null;
 
-    
-    document.querySelector("#startButton").addEventListener("click",() =>{
-        let playerOneName = document.getElementById('playerOne').value
-        let playerTwoName = document.getElementById('playerTwo').value
-
-        document.querySelector(".playerOneName").textContent = `: ${playerOneName}`
-        document.querySelector(".playerTwoName").textContent = `: ${playerTwoName}`
-
-    },)
-
-
     function startGame() {
-        restartGame(); 
-        gameInstance = ScreenController(); 
+        const playerOneName = document.getElementById('playerOne').value.trim();
+        const playerTwoName = document.getElementById('playerTwo').value.trim();
+        
+        restartGame();
+        document.querySelector(".playerOneName").textContent = `: ${playerOneName}`;
+        document.querySelector(".playerTwoName").textContent = `: ${playerTwoName}`;
+
+        gameInstance = ScreenController();
     }
 
     function restartGame() {
-        document.querySelector('.board').textContent = ''; // Clear the board display
+        const boardDiv = document.querySelector('.board');
+        boardDiv.textContent = ''; // Clear board
+        gameInstance = null; // Reset game instance
     }
 
-    // Attach a single event listener to start or restart the game
     document.querySelector('#startButton').addEventListener("click", startGame);
-    document.querySelector('#resetButton').addEventListener("click",restartGame)
+    document.querySelector('#resetButton').addEventListener("click", restartGame);
 }
-
 
 triggerFunction();

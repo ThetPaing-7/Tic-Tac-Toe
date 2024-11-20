@@ -1,4 +1,40 @@
+/* // <uniquifier>: Use a unique and descriptive class name
+// <weight>: Use a value from 100 to 700
+
+.kalnia-glaze-<uniquifier> {
+  font-family: "Kalnia Glaze", serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+} */
+
+:root{
+  color-scheme: light dark;
+
+  /* =========== */
+  --background-light-color : white;
+  --background-dark-color: black;
+  --inputbg-light-color:red;
+  --inputbg-dark-color:white;
+  --gameboard-light-color:yellow;
+  --gameboard-dark-color:green;
+  --text-light-color:black;
+  --text-dark-color:white;
+  --cell-x-lightcolor:rgb(89, 89, 210);
+  --cell-x-darkcolor:pink;
+  --cell-o-lightcolor:green;
+  --cell-o-darkcolor:purple;
+  --fanncy-font:"Kalnia Glaze", serif;
+  --steady-font:Verdana, Geneva, Tahoma, sans-serif;
+}
+
+
+
+
 body{
+  background-color: light-dark(var(--background-light-color),var(--background-dark-color));
   display: grid;
   height: 100%;
   grid-template-columns: 2fr 4fr 2fr;
@@ -8,6 +44,11 @@ body{
 .container{
   grid-area: 1 / 2 / 2 / 3 ;
   margin: 0px auto;
+  color: light-dark(var(--background-dark-color),var(--background-light-color));
+}
+
+.turn{
+  text-align: center;
 }
 
 .boardfinish{
@@ -31,18 +72,17 @@ body{
   border: 1px solid black;
   gap: 2px;
   padding: 2px;
-  background-color: yellow;
+  background-color: light-dark(var(--gameboard-light-color),var(--gameboard-dark-color));
 }
 
-.cell {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  font-size: 2rem;
-  border: 1px solid grey;
-  background: lightyellow;
-  cursor: pointer;
+.cell-x {
+    background-color: lightblue; /* Background color for X */
+    color:  light-dark(var(--cell-x-lightcolor),var(--cell-x-darkcolor)) ; /* Text color for X */
+}
+
+.cell-o {
+    background-color: lightcoral; /* Background color for O */
+    color: light-dark(var(--cell-o-lightcolor),var(--cell-o-darkcolor))
 }
 
 .playerInfoSession,
@@ -51,8 +91,139 @@ body{
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  font-family: var(--fanncy-font);
+  font-weight: 300;
+  text-shadow: 1px 1px 1px rgb(160, 171, 221);
+}
+
+label{
+    text-shadow: 1px 1px 3px rgb(252, 0, 8);
+    font-size: 20px;
+}
+
+.inputSession{
+  gap: 1.5rem;
+}
+
+input{
+  height: 30px;
+}
+
+input:focus{
+  border: 2px solid transparent;
+  transition: all 0.1 ease;
+  background: linear-gradient(#121125,#121125) 
+            padding-box,
+              linear-gradient(45deg,blue,red) border-box;
+}
+
+.inputSession[input]{
+  font-family: var(--steady-font);
+  color: light-dark(var(--inputbg-light-color),var(--inputbg-dark-color));
+
+}
+
+.playerInfoSession{
+  gap: 20px;
 }
 
 .playerInfoSession h2{
   text-align: center;
+  font-family: var(--steady-font);
+}
+
+
+.playerInfoSession .playerOneMarker,
+.playerInfoSession .playerTwoMarker{
+  font-family: var(--fanncy-font);
+  font-weight: 400;
+  font-size: 2rem;
+}
+
+/* CSS */
+#resetButton,
+#startButton {
+  background: linear-gradient(to bottom right, #EF4765, #FF9A5A);
+  border: 0;
+  border-radius: 12px;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 2.5;
+  outline: transparent;
+  padding: 0 1rem;
+  text-align: center;
+  text-decoration: none;
+  transition: box-shadow .2s ease-in-out;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+}
+
+#resetButton:not([disabled]):focus,
+#startButton:not([disabled]):focus {
+  box-shadow: 0 0 .25rem rgba(0, 0, 0, 0.5), -.125rem -.125rem 1rem rgba(239, 71, 101, 0.5), .125rem .125rem 1rem rgba(255, 154, 90, 0.5);
+}
+
+#resetButton:not([disabled]):hover,
+#startButton:not([disabled]):hover {
+  box-shadow: 0 0 .25rem rgba(0, 0, 0, 0.5), -.125rem -.125rem 1rem rgba(239, 71, 101, 0.5), .125rem .125rem 1rem rgba(255, 154, 90, 0.5);
+}
+
+
+/* From Uiverse.io by alexruix */ 
+/* The switch - the box around the slider */
+.switch {
+  font-size: 17px;
+  position: relative;
+  display: inline-block;
+  width: 3.5em;
+  height: 2em;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  --background: #28096b;
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--background);
+  transition: .5s;
+  border-radius: 30px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 1.4em;
+  width: 1.4em;
+  border-radius: 50%;
+  left: 10%;
+  bottom: 15%;
+  box-shadow: inset 8px -4px 0px 0px #fff000;
+  background: var(--background);
+  transition: .5s;
+}
+
+input:checked + .slider {
+  background-color: #522ba7;
+}
+
+input:checked + .slider:before {
+  transform: translateX(100%);
+  box-shadow: inset 15px -4px 0px 15px #fff000;
 }

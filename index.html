@@ -8,16 +8,22 @@
     <link rel="stylesheet" href="style.css">
     <!-- Js file -->
     <script src="jsfile.js" defer></script>
+    <!-- Google font -->
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Itim&family=Kalnia+Glaze:wght@100..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Playwrite+GB+S:ital,wght@0,100..400;1,100..400&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Player Input Session -->
     <div class="inputSession">
-        <label for="playerOne">Player One:</label>
-        <input type="text" id="playerOne">
-        <br>
-        <label for="playerTwo">Player Two:</label>
-        <input type="text" id="playerTwo">
-        <br>
+        <div>
+            <label for="playerOne">Player One:</label><br>
+            <input type="text" id="playerOne">
+        </div>
+        <div>
+            <label for="playerTwo">Player Two:</label><br>
+            <input type="text" id="playerTwo">
+        </div>
         <div class="buttonArea">
             <button id="startButton">Start</button>
             <button id="resetButton">Reset</button>
@@ -31,6 +37,12 @@
     </div>
     <!-- Player info section -->
     <div class="playerInfoSession">
+        <div>
+            <label class="switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+            </label>
+        </div>
         <div>
             <h2>Player One<span class="playerOneName"></span></h2>
             <h2 class="playerOneMarker">X</h2>
