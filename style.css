@@ -9,21 +9,38 @@
   font-variation-settings:
     "wdth" 100;
 } */
+html {
+  color-scheme: light dark;
+}
+
+html:has(#mode-switcher [value="light"]:checked){
+  color-scheme: light;
+}
+
+html:has(#mode-switcher [value="dark"]:checked){
+  color-scheme: dark;
+}
+
+fieldset {
+  width: max-content;
+  margin: 3rem auto;
+  font-size: 200%;
+}
 
 :root{
-  color-scheme: light dark;
-
   /* =========== */
-  --background-light-color : white;
+  --background-light-color : #F5F7F8;
   --background-dark-color: black;
   --inputbg-light-color:red;
   --inputbg-dark-color:white;
-  --gameboard-light-color:yellow;
-  --gameboard-dark-color:green;
+  --cell-light-color: #FFEFEF;
+  --cell-dark-color: #C1D8C3;
+  --gameboard-light-color:transparent;
+  --gameboard-dark-color:transparent;
   --text-light-color:black;
   --text-dark-color:white;
   --cell-x-lightcolor:rgb(89, 89, 210);
-  --cell-x-darkcolor:pink;
+  --cell-x-darkcolor:rgb(13, 1, 3);
   --cell-o-lightcolor:green;
   --cell-o-darkcolor:purple;
   --fanncy-font:"Kalnia Glaze", serif;
@@ -57,7 +74,7 @@ body{
   width: 500px;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  border: 1px solid black;
+  border: none;
   gap: 2px;
   padding: 2px;
   background-color: transparent;
@@ -69,20 +86,27 @@ body{
   width: 500px;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  border: 1px solid black;
+  border: none;
   gap: 2px;
   padding: 2px;
   background-color: light-dark(var(--gameboard-light-color),var(--gameboard-dark-color));
 }
 
+.cell{
+  background-color: light-dark(var(--cell-light-color),var(--cell-dark-color));
+}
+
 .cell-x {
     background-color: lightblue; /* Background color for X */
     color:  light-dark(var(--cell-x-lightcolor),var(--cell-x-darkcolor)) ; /* Text color for X */
+    font-size: 2rem;
+    
 }
 
 .cell-o {
     background-color: lightcoral; /* Background color for O */
-    color: light-dark(var(--cell-o-lightcolor),var(--cell-o-darkcolor))
+    color: light-dark(var(--cell-o-lightcolor),var(--cell-o-darkcolor));
+    font-size: 2rem;
 }
 
 .playerInfoSession,
@@ -107,12 +131,16 @@ label{
 
 input{
   height: 30px;
+  padding: 5px;
+  font-family: var(--steady-font);
+  font-size: 20;
+  font-weight: bold;
 }
 
 input:focus{
   border: 2px solid transparent;
   transition: all 0.1 ease;
-  background: linear-gradient(#121125,#121125) 
+  background: linear-gradient(#a4a1d3,#9896c7) 
             padding-box,
               linear-gradient(45deg,blue,red) border-box;
 }
@@ -162,6 +190,7 @@ input:focus{
   -webkit-user-select: none;
   touch-action: manipulation;
   white-space: nowrap;
+  margin: 20px auto;
 }
 
 #resetButton:not([disabled]):focus,
@@ -174,56 +203,3 @@ input:focus{
   box-shadow: 0 0 .25rem rgba(0, 0, 0, 0.5), -.125rem -.125rem 1rem rgba(239, 71, 101, 0.5), .125rem .125rem 1rem rgba(255, 154, 90, 0.5);
 }
 
-
-/* From Uiverse.io by alexruix */ 
-/* The switch - the box around the slider */
-.switch {
-  font-size: 17px;
-  position: relative;
-  display: inline-block;
-  width: 3.5em;
-  height: 2em;
-}
-
-/* Hide default HTML checkbox */
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-/* The slider */
-.slider {
-  --background: #28096b;
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--background);
-  transition: .5s;
-  border-radius: 30px;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 1.4em;
-  width: 1.4em;
-  border-radius: 50%;
-  left: 10%;
-  bottom: 15%;
-  box-shadow: inset 8px -4px 0px 0px #fff000;
-  background: var(--background);
-  transition: .5s;
-}
-
-input:checked + .slider {
-  background-color: #522ba7;
-}
-
-input:checked + .slider:before {
-  transform: translateX(100%);
-  box-shadow: inset 15px -4px 0px 15px #fff000;
-}

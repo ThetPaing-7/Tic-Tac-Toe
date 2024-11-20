@@ -37,12 +37,17 @@
     </div>
     <!-- Player info section -->
     <div class="playerInfoSession">
-        <div>
-            <label class="switch">
-                <input type="checkbox">
-                <span class="slider"></span>
-            </label>
-        </div>
+    <fieldset id="mode-switcher">
+  <legend>Select a color mode:</legend>
+  <div>
+    <input type="radio" id="light" name="mode" value="light" />
+    <label for="light">Light</label>
+  </div>
+  <div>
+    <input type="radio" id="dark" name="mode" value="dark" />
+    <label for="dark">Dark</label>
+  </div>
+</fieldset>
         <div>
             <h2>Player One<span class="playerOneName"></span></h2>
             <h2 class="playerOneMarker">X</h2>
@@ -53,6 +58,5 @@
             <h2 class="playerTwoMarker">O</h2>  
         </div>
     </div>
-
 </body>
 </html>

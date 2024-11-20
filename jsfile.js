@@ -139,7 +139,7 @@ function GameController(playerOneName = "Player One", playerTwoName = "Player Tw
 
         const ground = board.getBoard();
         if (ground[row][col].getValue() !== "") {
-            console.log("Try another move");
+            alert("Try another move");
             return;
         }
 
@@ -215,11 +215,13 @@ function ScreenController() {
 
 function triggerFunction() {
     let gameInstance = null;
+   
+
 
     function startGame() {
         const playerOneName = document.getElementById('playerOne').value.trim();
         const playerTwoName = document.getElementById('playerTwo').value.trim();
-        
+
         restartGame();
         document.querySelector(".playerOneName").textContent = `: ${playerOneName}`;
         document.querySelector(".playerTwoName").textContent = `: ${playerTwoName}`;
@@ -235,6 +237,22 @@ function triggerFunction() {
 
     document.querySelector('#startButton').addEventListener("click", startGame);
     document.querySelector('#resetButton').addEventListener("click", restartGame);
+
+
 }
 
 triggerFunction();
+
+
+const html = document.documentElement;
+const toggle = document.querySelector(".switch");
+
+toggle.addEventListener("click", () => {
+    if (toggle.checked) {
+        html.style.setProperty("color-scheme", "dark");
+    } else {
+        html.style.setProperty("color-scheme", "light");
+    }
+});
+
+
